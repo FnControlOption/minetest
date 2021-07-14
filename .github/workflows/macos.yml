@@ -21,11 +21,11 @@ jobs:
       - name: Install deps
         run: |
           source ./util/ci/common.sh
-          install_macos_deps
-          #wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
-          #gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
+          #install_macos_deps
+          wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
+          gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
           #brew install cmake libpng jpeg sqlite leveldb libogg libvorbis freetype gmp jsoncpp
-          brew install libpng
+          #brew install libpng
 
 #       - name: Build
 #         run: |
@@ -37,11 +37,11 @@ jobs:
 
       - name: Build
         run: |
-          git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
-          cd irrlicht
-          cmake . -DBUILD_SHARED_LIBS=OFF
-          make -j2
-          cd ..
+          #git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
+          #cd irrlicht
+          #cmake . -DBUILD_SHARED_LIBS=OFF
+          #make -j2
+          #cd ..
           mkdir cmakebuild
           mkdir -p build/macos/
           cd cmakebuild
