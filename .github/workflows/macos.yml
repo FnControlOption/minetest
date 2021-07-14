@@ -6,9 +6,8 @@ on:
   pull_request:
     branches: [ master ]
 
-# env:
-#   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-#   BUILD_TYPE: Release
+env:
+  IRRLICHT_TAG: 1.9.0mt1
 
 jobs:
   build:
@@ -34,10 +33,17 @@ jobs:
 
       - name: Build
         run: |
+          git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
+          cd irrlicht
+          cmake . -DBUILD_SHARED_LIBS=OFF
+          make -j2
+          cd ..
           mkdir cmakebuild
           mkdir -p artifact/minetest/usr/
           cd cmakebuild
-          cmake -DCMAKE_INSTALL_PREFIX=../artifact/minetest/usr/ \
+          cmake -DIRRLICHT_LIBRARY=$PWD/../irrlicht/lib/OSX/libIrrlichtMt.a \
+            -DIRRLICHT_INCLUDE_DIR=$PWD/../irrlicht/include \
+            -DCMAKE_INSTALL_PREFIX=../artifact/minetest/usr/ \
             -DCMAKE_BUILD_TYPE=Release -DRUN_IN_PLACE=FALSE \
             -DENABLE_FREETYPE=TRUE -DENABLE_GETTEXT=TRUE \
             -DBUILD_CLIENT=TRUE -DBUILD_SERVER=FALSE ..
@@ -56,19 +62,4 @@ jobs:
         with:
           name: minetest-macos
           path: ./artifact/*
-
-#       - name: Configure CMake
-#         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-#         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-#         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-#       - name: Build
-#         # Build your program with the given configuration
-#         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-#       - name: Test
-#         working-directory: ${{github.workspace}}/build
-#         # Execute tests defined by the CMake configuration.  
-#         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-#         run: ctest -C ${{env.BUILD_TYPE}}
       
