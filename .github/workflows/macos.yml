@@ -1,10 +1,25 @@
 name: macos
 
+# build on c/cpp changes or workflow changes
 on:
   push:
-    branches: [ master ]
+    paths:
+      - 'lib/**.[ch]'
+      - 'lib/**.cpp'
+      - 'src/**.[ch]'
+      - 'src/**.cpp'
+      - '**/CMakeLists.txt'
+      - 'cmake/Modules/**'
+      - '.github/workflows/macos.yml'
   pull_request:
-    branches: [ master ]
+    paths:
+      - 'lib/**.[ch]'
+      - 'lib/**.cpp'
+      - 'src/**.[ch]'
+      - 'src/**.cpp'
+      - '**/CMakeLists.txt'
+      - 'cmake/Modules/**'
+      - '.github/workflows/macos.yml'
 
 env:
   IRRLICHT_TAG: 1.9.0mt1
@@ -12,41 +27,33 @@ env:
 jobs:
   build:
     runs-on: macos-10.15
-
     steps:
       - uses: actions/checkout@v2
-
-      # - uses: Homebrew/actions/setup-homebrew@master
-
       - name: Install deps
         run: |
-          source ./util/ci/common.sh
-          install_macos_deps
-          #wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
-          #gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
-          #brew install cmake libpng jpeg sqlite leveldb libogg libvorbis freetype gmp jsoncpp
-          #brew reinstall libpng
-          #brew unlink $(brew ls --formula)
-          #pkgs=(cmake freetype gettext jpeg libogg libvorbis)
-          #brew link ${pkgs[@]}
+          pkgs=(cmake freetype gettext hiredis jpeg leveldb libogg libpng libvorbis luajit)
+          brew unlink $(brew ls --formula)
+          brew update
+          brew install ${pkgs[@]}
+          brew link ${pkgs[@]}
 
-#       - name: Build
-#         run: |
-#           ./util/ci/build.sh
-
-#       - name: Test
-#         run: |
-#           ./bin/minetest --run-unittests
+          if true; then
+          wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
+          gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
+          fi
 
       - name: Build
         run: |
+          if false; then
           git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
           cd irrlicht
           cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_FIND_FRAMEWORK=LAST
           make -j2
           cd ..
+          fi
+
           mkdir cmakebuild
-          mkdir -p build/macos/
+          #mkdir -p build/macos/
           cd cmakebuild
           cmake \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=10.14 \
@@ -58,23 +65,14 @@ jobs:
             -DENABLE_GETTEXT=TRUE \
             -DBUILD_CLIENT=TRUE \
             -DBUILD_SERVER=FALSE \
-            -DIRRLICHT_LIBRARY=$PWD/../irrlicht/lib/OSX/libIrrlichtMt.a \
-            -DIRRLICHT_INCLUDE_DIR=$PWD/../irrlicht/include \
             ..
+            #-DIRRLICHT_LIBRARY=$PWD/../irrlicht/lib/OSX/libIrrlichtMt.a \
+            #-DIRRLICHT_INCLUDE_DIR=$PWD/../irrlicht/include \
           make -j2
           make install
-
-          # make package
-          # unzip minetest-*-osx.zip
-          # mv minetest.app ..
 
       - uses: actions/upload-artifact@v2
         with:
           name: minetest-macos
           path: ./build/macos/
-
-#       - uses: actions/upload-artifact@v2
-#         with:
-#           name: minetest-macos-app
-#           path: ./minetest.app
       
