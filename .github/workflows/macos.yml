@@ -24,13 +24,38 @@ jobs:
           source ./util/ci/common.sh
           install_macos_deps
 
+#       - name: Build
+#         run: |
+#           ./util/ci/build.sh
+
+#       - name: Test
+#         run: |
+#           ./bin/minetest --run-unittests
+
       - name: Build
         run: |
-          ./util/ci/build.sh
+          mkdir cmakebuild
+          mkdir -p artifact/minetest/usr/
+          cd cmakebuild
+          cmake -DCMAKE_INSTALL_PREFIX=../artifact/minetest/usr/ \
+            -DCMAKE_BUILD_TYPE=Release -DRUN_IN_PLACE=FALSE \
+            -DENABLE_FREETYPE=TRUE -DENABLE_GETTEXT=TRUE \
+            -DBUILD_CLIENT=TRUE -DBUILD_SERVER=FALSE ..
+          make -j2
+          make install
+          # make package
+          # unzip minetest-*-osx.zip
+          # mv minetest.app ..
 
-      - name: Test
-        run: |
-          ./bin/minetest --run-unittests
+#       - uses: actions/upload-artifact@v2
+#         with:
+#           name: minetest-macos
+#           path: ./minetest.app
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: minetest-macos
+          path: ./artifact/*
 
 #       - name: Configure CMake
 #         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
