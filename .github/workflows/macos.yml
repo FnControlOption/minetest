@@ -23,6 +23,9 @@ on:
 
 env:
   IRRLICHT_TAG: 1.9.0mt1
+  MINETEST_GAME_REPO: https://github.com/minetest/minetest_game.git
+  MINETEST_GAME_BRANCH: master
+  MINETEST_GAME_NAME: minetest_game
 
 jobs:
   build:
@@ -41,12 +44,14 @@ jobs:
           brew install ${pkgs[@]}
           brew unlink $(brew ls --formula)
           brew link ${pkgs[@]}
-          #brew link $(brew deps --union ${pkgs[@]})
 
       - name: Build
         run: |
+          git clone -b $MINETEST_GAME_BRANCH $MINETEST_GAME_REPO games/$MINETEST_GAME_NAME
+          rm -rf games/$MINETEST_GAME_NAME/.git
+
           if true; then
-          git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
+          git clone -b $IRRLICHT_TAG https://github.com/minetest/irrlicht
           cd irrlicht
           cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_FIND_FRAMEWORK=LAST
           make -j2
@@ -54,7 +59,6 @@ jobs:
           fi
 
           mkdir cmakebuild
-          #mkdir -p build/macos/
           cd cmakebuild
           cmake \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=10.14 \
