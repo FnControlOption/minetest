@@ -47,19 +47,19 @@ jobs:
           mkdir cmakebuild
           mkdir -p build/macos/
           cd cmakebuild
+          #  -DENABLE_FREETYPE=TRUE -DENABLE_GETTEXT=TRUE \
           #  -DIRRLICHT_LIBRARY=$PWD/../irrlicht/lib/OSX/libIrrlichtMt.a \
           #  -DIRRLICHT_INCLUDE_DIR=$PWD/../irrlicht/include \
+          #  -DGETTEXT_MSGFMT=/usr/local/opt/gettext/bin/msgfmt \
+          #  -DGETTEXT_INCLUDE_DIR=/usr/local/opt/gettext/include \
+          #  -DGETTEXT_LIBRARY=/usr/local/opt/gettext/lib/libintl.a \
+          #  -DJPEG_INCLUDE_DIR=/usr/local/opt/jpeg/include \
+          #  -DJPEG_LIBRARY=/usr/local/opt/jpeg/lib/libjpeg.a \
+          #  -DPNG_INCLUDE_DIR=/usr/local/opt/libpng/include \
+          #  -DPNG_LIBRARY=/usr/local/opt/libpng/lib/libpng.a \
           cmake -DCMAKE_OSX_DEPLOYMENT_TARGET=10.14 \
             -DCMAKE_INSTALL_PREFIX=../build/macos/ \
             -DCMAKE_BUILD_TYPE=Release -DRUN_IN_PLACE=FALSE \
-            -DENABLE_FREETYPE=TRUE -DENABLE_GETTEXT=TRUE \
-            -DGETTEXT_MSGFMT=/usr/local/opt/gettext/bin/msgfmt \
-            -DGETTEXT_INCLUDE_DIR=/usr/local/opt/gettext/include \
-            -DGETTEXT_LIBRARY=/usr/local/opt/gettext/lib/libintl.a \
-            -DJPEG_INCLUDE_DIR=/usr/local/opt/jpeg/include \
-            -DJPEG_LIBRARY=/usr/local/opt/jpeg/lib/libjpeg.a \
-            -DPNG_INCLUDE_DIR=/usr/local/opt/libpng/include \
-            -DPNG_LIBRARY=/usr/local/opt/libpng/lib/libpng.a \
             -DBUILD_CLIENT=TRUE -DBUILD_SERVER=FALSE ..
           make -j2
           make install
