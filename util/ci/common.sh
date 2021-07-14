@@ -22,14 +22,18 @@ install_linux_deps() {
 	sudo apt-get remove -y libgcc-11-dev gcc-11 || :
 }
 
-# Mac OSX build only
-install_macosx_deps() {
-	brew update
-	brew install freetype gettext hiredis irrlicht leveldb libogg libvorbis luajit
-	if brew ls | grep -q jpeg; then
-		brew upgrade jpeg
+# macOS build only
+install_macos_deps() {
+	local pkgs=(freetype gettext hiredis jpeg leveldb libogg libvorbis luajit)
+
+	if [[ "$1" == "--old-irr" ]]; then
+		shift
+		pkgs+=(irrlicht)
 	else
-		brew install jpeg
+		wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
+		sudo gtar -xaf macos-catalina.tar.gz -C /usr/local
 	fi
-	#brew upgrade postgresql
+
+	brew update
+	brew install ${pkgs[@]} "$@"
 }
