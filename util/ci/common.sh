@@ -31,11 +31,13 @@ install_macos_deps() {
 		pkgs+=(irrlicht)
 	else
 		wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
-		mkdir _irrlicht
-		gtar -xaf macos-catalina.tar.gz -C _irrlicht
-		mv _irrlicht/include/* /usr/local/include
-		mv _irrlicht/lib/*.dylib /usr/local/lib
-		mv _irrlicht/lib/cmake/* /usr/local/lib/cmake
+		# mkdir _irrlicht
+		# gtar -xaf macos-catalina.tar.gz -C _irrlicht
+		# mv _irrlicht/include/* /usr/local/include
+		# mv _irrlicht/lib/*.dylib /usr/local/lib
+		# mv _irrlicht/lib/cmake/* /usr/local/lib/cmake
+		gtar -xaf macos-catalina.tar.gz -C _irrlicht --no-same-permissions
+		echo "IrrlichtMt successfully installed"
 	fi
 
 	brew update
