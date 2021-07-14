@@ -27,7 +27,8 @@ jobs:
           #brew install cmake libpng jpeg sqlite leveldb libogg libvorbis freetype gmp jsoncpp
           #brew reinstall libpng
           brew unlink $(brew ls --formula)
-          brew link cmake libvorbis
+          pkgs=(cmake libogg libvorbis)
+          brew link ${pkgs[@]}
 
 #       - name: Build
 #         run: |
