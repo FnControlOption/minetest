@@ -31,16 +31,16 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install deps
         run: |
+          if true; then
+          wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
+          gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
+          fi
+
           pkgs=(cmake freetype gettext hiredis jpeg leveldb libogg libpng libvorbis luajit)
           brew unlink $(brew ls --formula)
           brew update
           brew install ${pkgs[@]}
           brew link ${pkgs[@]}
-
-          if true; then
-          wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
-          gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
-          fi
 
       - name: Build
         run: |
