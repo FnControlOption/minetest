@@ -39,7 +39,7 @@ install_macos_deps() {
 		
 		# sudo gtar -xaf macos-catalina.tar.gz -C /usr/local -m --no-same-owner --no-same-permissions
 		
-		sudo gtar -xaf macos-catalina.tar.gz -C /usr/local --no-same-owner --no-same-permissions
+		gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
 		echo "IrrlichtMt successfully installed"
 	fi
 
