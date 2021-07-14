@@ -33,20 +33,22 @@ jobs:
 
       - name: Build
         run: |
-          git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
-          cd irrlicht
-          cmake . -DBUILD_SHARED_LIBS=OFF
-          make -j2
-          cd ..
+          # brew install cmake libpng jpeg sqlite leveldb libogg libvorbis freetype gmp jsoncpp
+          # git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
+          # cd irrlicht
+          # cmake . -DBUILD_SHARED_LIBS=OFF
+          # make -j2
+          # cd ..
           mkdir cmakebuild
           mkdir -p artifact/minetest/usr/
           cd cmakebuild
-          cmake -DIRRLICHT_LIBRARY=$PWD/../irrlicht/lib/OSX/libIrrlichtMt.a \
-            -DIRRLICHT_INCLUDE_DIR=$PWD/../irrlicht/include \
+          # cmake -DIRRLICHT_LIBRARY=$PWD/../irrlicht/lib/OSX/libIrrlichtMt.a \
+          #  -DIRRLICHT_INCLUDE_DIR=$PWD/../irrlicht/include \
+          cmake \
             -DCMAKE_INSTALL_PREFIX=../artifact/minetest/usr/ \
             -DCMAKE_BUILD_TYPE=Release -DRUN_IN_PLACE=FALSE \
             -DENABLE_FREETYPE=TRUE -DENABLE_GETTEXT=TRUE \
-            -DCUSTOM_GETTEXT_PATH=/usr/local/opt/gettext \
+            -DCUSTOM_GETTEXT_PATH=/usr/local \
             -DBUILD_CLIENT=TRUE -DBUILD_SERVER=FALSE ..
           make -j2
           make install
