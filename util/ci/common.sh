@@ -36,7 +36,7 @@ install_macos_deps() {
 		# mv _irrlicht/include/* /usr/local/include
 		# mv _irrlicht/lib/*.dylib /usr/local/lib
 		# mv _irrlicht/lib/cmake/* /usr/local/lib/cmake
-		gtar -xaf macos-catalina.tar.gz -C /usr/local --no-same-permissions
+		sudo gtar -xaf macos-catalina.tar.gz -C /usr/local -m --no-same-owner --no-same-permissions
 		echo "IrrlichtMt successfully installed"
 	fi
 
