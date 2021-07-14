@@ -42,13 +42,12 @@ jobs:
         run: |
           git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
           cd irrlicht
-          cmake . -DBUILD_SHARED_LIBS=OFF
+          cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_FIND_FRAMEWORK=LAST
           make -j2
           cd ..
           mkdir cmakebuild
           mkdir -p build/macos/
           cd cmakebuild
-          # https://github.com/opentoonz/opentoonz/issues/79#issuecomment-371925249
           cmake \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=10.14 \
             -DCMAKE_FIND_FRAMEWORK=LAST \
