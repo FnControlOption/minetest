@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install deps
         run: |
-          if true; then
+          if false; then
           wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
           gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
           fi
@@ -41,10 +41,11 @@ jobs:
           brew install ${pkgs[@]}
           brew unlink $(brew ls --formula)
           brew link ${pkgs[@]}
+          #brew link $(brew deps --union ${pkgs[@]})
 
       - name: Build
         run: |
-          if false; then
+          if true; then
           git clone https://github.com/minetest/irrlicht -b $IRRLICHT_TAG
           cd irrlicht
           cmake . -DBUILD_SHARED_LIBS=OFF -DCMAKE_FIND_FRAMEWORK=LAST
@@ -65,9 +66,9 @@ jobs:
             -DENABLE_GETTEXT=TRUE \
             -DBUILD_CLIENT=TRUE \
             -DBUILD_SERVER=FALSE \
+            -DIRRLICHT_LIBRARY=$PWD/../irrlicht/lib/OSX/libIrrlichtMt.a \
+            -DIRRLICHT_INCLUDE_DIR=$PWD/../irrlicht/include \
             ..
-            #-DIRRLICHT_LIBRARY=$PWD/../irrlicht/lib/OSX/libIrrlichtMt.a \
-            #-DIRRLICHT_INCLUDE_DIR=$PWD/../irrlicht/include \
           make -j2
           make install
 
