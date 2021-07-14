@@ -31,7 +31,7 @@ install_macos_deps() {
 		pkgs+=(irrlicht)
 	else
 		wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
-		gtar -xaf macos-catalina.tar.gz -C /usr/local
+		sudo gtar -xaf macos-catalina.tar.gz -C /usr/local --no-same-owner
 	fi
 
 	brew update
