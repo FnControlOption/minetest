@@ -25,7 +25,7 @@ jobs:
           wget "https://github.com/FnControlOption/irrlicht/releases/download/1.9.0mt3-macos/macos-catalina.tar.gz"
           gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
           #brew install cmake libpng jpeg sqlite leveldb libogg libvorbis freetype gmp jsoncpp
-          brew reinstall libpng
+          #brew reinstall libpng
 
 #       - name: Build
 #         run: |
@@ -57,7 +57,7 @@ jobs:
             -DJPEG_INCLUDE_DIR=/usr/local/opt/jpeg/include \
             -DJPEG_LIBRARY=/usr/local/opt/jpeg/lib/libjpeg.a \
             -DPNG_INCLUDE_DIR=/usr/local/opt/libpng/include \
-            -DPNG_LIBRARY=/usr/local/opt/libpng/lib/libjpeg.a \
+            -DPNG_LIBRARY=/usr/local/opt/libpng/lib/libpng.a \
             -DBUILD_CLIENT=TRUE -DBUILD_SERVER=FALSE ..
           make -j2
           make install
