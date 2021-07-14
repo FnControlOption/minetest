@@ -36,10 +36,10 @@ jobs:
           gtar -xaf macos-catalina.tar.gz -C /usr/local --touch
           fi
 
-          pkgs=(cmake freetype gettext hiredis jpeg leveldb libogg libpng libvorbis luajit)
-          brew unlink $(brew ls --formula)
+          pkgs=(cmake freetype gettext gmp hiredis jpeg jsoncpp leveldb libogg libpng libvorbis luajit)
           brew update
           brew install ${pkgs[@]}
+          brew unlink $(brew ls --formula)
           brew link ${pkgs[@]}
 
       - name: Build
