@@ -22,7 +22,7 @@ jobs:
       - name: Install deps
         run: |
           source ./util/ci/common.sh
-          install_macosx_deps
+          install_macos_deps
 
       - name: Build
         run: |
