@@ -76,6 +76,10 @@ jobs:
           make -j2
           make install
 
+      - name: Test
+        run: |
+          ./bin/minetest --run-unittests
+
       - uses: actions/upload-artifact@v2
         with:
           name: minetest-macos
