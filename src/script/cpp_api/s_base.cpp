@@ -5,6 +5,7 @@
 #include "cpp_api/s_base.h"
 #include "cpp_api/s_internal.h"
 #include "cpp_api/s_security.h"
+#include "lua_api/l_io.h"
 #include "lua_api/l_object.h"
 #include "common/c_converter.h"
 #include "server/player_sao.h"
@@ -82,7 +83,7 @@ ScriptApiBase::ScriptApiBase(ScriptingType type):
 	if (m_type == ScriptingType::Client)
 		clientOpenLibs(m_luastack);
 	else
-		luaL_openlibs(m_luastack);
+		openLibs(m_luastack);
 
 	// Load bit library
 	lua_pushcfunction(m_luastack, luaopen_bit32, LUA_BITLIBNAME);
@@ -176,6 +177,21 @@ int ScriptApiBase::luaPanic(lua_State *L)
 	FATAL_ERROR(oss.str().c_str());
 	// NOTREACHED
 	return 0;
+}
+
+void ScriptApiBase::openLibs(lua_State *L)
+{
+	luaL_openlibs(m_luastack);
+
+	static const std::vector<std::pair<std::string, lua_CFunction>> m_extra_libs = {
+		{ LUA_IOLIBNAME,   luaopen_io      },
+	};
+
+	for (const auto &lib : m_extra_libs) {
+	    lua_pushcfunction(L, lib.second, lib.first.c_str());
+	    lua_pushstring(L, lib.first.c_str());
+	    lua_call(L, 1, 0);
+	}
 }
 
 #if CHECK_CLIENT_BUILD()

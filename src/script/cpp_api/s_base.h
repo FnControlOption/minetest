@@ -111,6 +111,7 @@ public:
 	 */
 	static std::string getCurrentModNameInsecure(lua_State *L);
 
+	void openLibs(lua_State *L);
 #if !CHECK_CLIENT_BUILD()
 	inline void clientOpenLibs(lua_State *L) { assert(false); }
 #else

@@ -13,8 +13,15 @@
 
 #include "common/c_internal.h"
 
+#define LUA_FILEHANDLE		"FILE*"
+#define LUA_NUMBER_SCAN		"%lf"
+#define LUA_NUMBER_FMT		"%.14g"
+
 #define luaL_checkint(L,n)	((int)luaL_checkinteger(L, (n)))
 #define lua_register(L,n,f) (lua_pushcfunction(L, (f), (n)), lua_setglobal(L, (n)))
+#define lua_popen(L,c,m)	((void)L, _popen(c,m))
+#define lua_pclose(L,file)	((void)L, (_pclose(file) != -1))
+#define luaL_addsize(B,n)	((B)->p += (n))
 
 #define luamethod(class, name) {#name, class::l_##name}
 
