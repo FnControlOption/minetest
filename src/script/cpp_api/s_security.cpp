@@ -52,6 +52,7 @@ static void shallow_copy_table(lua_State *L, int from=-2, int to=-1)
 	}
 }
 
+#if 0
 // Pushes the original version of a library function on the stack, from the old version
 static inline void push_original(lua_State *L, const char *lib, const char *func)
 {
@@ -61,6 +62,7 @@ static inline void push_original(lua_State *L, const char *lib, const char *func
 	lua_getfield(L, -1, func);
 	lua_remove(L, -2);  // Remove lib
 }
+#endif
 
 
 void ScriptApiSecurity::initializeSecurity()
@@ -106,6 +108,8 @@ void ScriptApiSecurity::initializeSecurity()
 		"tracy",
 #endif
 	};
+#if 0
+	// https://luau.org/sandbox#library
 	static const char *io_whitelist[] = {
 		"close",
 		"flush",
@@ -113,27 +117,40 @@ void ScriptApiSecurity::initializeSecurity()
 		"type",
 		"write",
 	};
+#endif
+	// https://github.com/luau-lang/luau/blob/master/VM/src/loslib.cpp
 	static const char *os_whitelist[] = {
 		"clock",
 		"date",
 		"difftime",
+#if 0
 		"getenv",
+#endif
 		"time",
 	};
+	// https://github.com/luau-lang/luau/blob/master/VM/src/ldblib.cpp
 	static const char *debug_whitelist[] = {
+#if 0
 		"gethook",
+#endif
 		"traceback",
+		"info",
+#if 0
 		"getinfo",
 		"upvalueid",
 		"sethook",
 		"debug",
+#endif
 	};
+#if 0
+	// https://luau.org/sandbox#library
 	static const char *package_whitelist[] = {
 		"config",
 		"cpath",
 		"path",
 		"searchpath",
 	};
+#endif
 #if USE_LUAJIT
 	static const char *jit_whitelist[] = {
 		"arch",
@@ -189,6 +206,7 @@ void ScriptApiSecurity::initializeSecurity()
 	}
 
 
+#if 0
 	// Copy safe IO functions
 	lua_getfield(L, old_globals, "io");
 	lua_newtable(L);
@@ -202,6 +220,7 @@ void ScriptApiSecurity::initializeSecurity()
 
 	lua_setglobal(L, "io");
 	lua_pop(L, 1);  // Pop old IO
+#endif
 
 
 	// Copy safe OS functions
@@ -209,10 +228,13 @@ void ScriptApiSecurity::initializeSecurity()
 	lua_newtable(L);
 	copy_safe(L, os_whitelist, sizeof(os_whitelist));
 
+#if 0
+	// https://github.com/luau-lang/luau/blob/master/VM/src/loslib.cpp
 	// And replace unsafe ones
 	SECURE_API(os, remove);
 	SECURE_API(os, rename);
 	SECURE_API(os, setlocale);
+#endif
 
 	lua_setglobal(L, "os");
 	lua_pop(L, 1);  // Pop old OS
@@ -226,12 +248,14 @@ void ScriptApiSecurity::initializeSecurity()
 	lua_pop(L, 1);  // Pop old debug
 
 
+#if 0
 	// Copy safe package fields
 	lua_getfield(L, old_globals, "package");
 	lua_newtable(L);
 	copy_safe(L, package_whitelist, sizeof(package_whitelist));
 	lua_setglobal(L, "package");
 	lua_pop(L, 1);  // Pop old package
+#endif
 
 #if USE_LUAJIT
 	// Copy safe jit functions, if they exist
@@ -306,14 +330,19 @@ void ScriptApiSecurity::initializeSecurityClient()
 		"tracy",
 #endif
 	};
+	// https://github.com/luau-lang/luau/blob/master/VM/src/loslib.cpp
 	static const char *os_whitelist[] = {
 		"clock",
 		"date",
 		"difftime",
 		"time"
 	};
+	// https://github.com/luau-lang/luau/blob/master/VM/src/ldblib.cpp
 	static const char *debug_whitelist[] = {
+#if 0
 		"getinfo", // used by builtin and unset before mods load
+#endif
+		"info",
 		"traceback"
 	};
 
@@ -846,6 +875,7 @@ int ScriptApiSecurity::sl_g_require(lua_State *L)
 }
 
 
+#if 0
 int ScriptApiSecurity::sl_io_open(lua_State *L)
 {
 	bool with_mode = lua_gettop(L) > 1;
@@ -966,3 +996,4 @@ int ScriptApiSecurity::sl_os_setlocale(lua_State *L)
 	lua_call(L, cat ? 2 : 1, 1);
 	return 1;
 }
+#endif
