@@ -31,7 +31,8 @@ int script_exception_wrapper(lua_State *L, lua_CFunction f)
 		std::string e_descr = debug_describe_exc(e);
 		lua_pushlstring(L, e_descr.c_str(), e_descr.size());
 	}
-	return lua_error(L);  // Rethrow as a Lua error.
+	lua_error(L);  // Rethrow as a Lua error.
+	return 0;  /* unreachable */
 }
 
 int script_error_handler(lua_State *L)
@@ -116,8 +117,7 @@ void script_error(lua_State *L, int pcall_result, const char *mod, const char *f
 		return ret;
 
 	lua_Debug ar;
-	if (lua_getstack(L, stack_depth, &ar)) {
-		FATAL_ERROR_IF(!lua_getinfo(L, "Sl", &ar), "lua_getinfo() failed");
+	if (lua_getinfo(L, stack_depth, "Sl", &ar)) {
 		ret.append(" (at ").append(ar.short_src).append(":"
 			+ std::to_string(ar.currentline) + ")");
 	} else {

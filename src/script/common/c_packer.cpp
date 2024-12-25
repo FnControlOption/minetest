@@ -14,8 +14,9 @@
 #include "debug.h"
 #include "threading/mutex_auto_lock.h"
 
-extern "C" {
-#include <lauxlib.h>
+extern "C++" {
+#include <lualib.h>
+#include <luacode.h>
 }
 
 //
@@ -560,9 +561,12 @@ void script_unpack(lua_State *L, PackedValue *pv)
 			case LUA_TTABLE:
 				lua_createtable(L, i.uidata1, i.uidata2);
 				break;
-			case LUA_TFUNCTION:
-				luaL_loadbuffer(L, i.sdata.data(), i.sdata.size(), nullptr);
+			case LUA_TFUNCTION: {
+				size_t bytecodeSize;
+				char* bytecode = luau_compile(i.sdata.data(), i.sdata.size(), nullptr, &bytecodeSize);
+				luau_load(L, nullptr, bytecode, bytecodeSize, 0);
 				break;
+			}
 			case LUA_TUSERDATA: {
 				PackerTuple ser;
 				sanity_check(find_packer(i.sdata.c_str(), ser));

@@ -215,8 +215,6 @@ int ObjectRef::l_set_hp(lua_State *L)
 
 	reason.from_mod = true;
 	if (lua_istable(L, 3)) {
-		lua_pushvalue(L, 3);
-
 		lua_getfield(L, -1, "type");
 		if (lua_isstring(L, -1) &&
 				!reason.setTypeFromString(readParam<std::string>(L, -1))) {
@@ -224,12 +222,12 @@ int ObjectRef::l_set_hp(lua_State *L)
 		}
 		lua_pop(L, 1);
 
-		reason.lua_reference = luaL_ref(L, LUA_REGISTRYINDEX);
+		reason.lua_reference = lua_ref(L, 3);
 	}
 
 	sao->setHP(hp, reason);
 	if (reason.hasLuaReference())
-		luaL_unref(L, LUA_REGISTRYINDEX, reason.lua_reference);
+		lua_unref(L, reason.lua_reference);
 	return 0;
 }
 

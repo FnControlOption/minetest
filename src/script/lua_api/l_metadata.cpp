@@ -22,7 +22,7 @@ MetaDataRef *MetaDataRef::checkAnyMetadata(lua_State *L, int narg)
 	}
 
 	if (!ok)
-		luaL_typerror(L, narg, "MetaDataRef");
+		luaL_typeerrorL(L, narg, "MetaDataRef");
 
 	return *(MetaDataRef **)ud; // unbox pointer
 }

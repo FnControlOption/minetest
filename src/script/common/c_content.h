@@ -12,7 +12,7 @@
 
 #pragma once
 
-extern "C" {
+extern "C++" {
 #include <lua.h>
 }
 

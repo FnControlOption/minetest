@@ -21,10 +21,12 @@
 	#include "tracy/TracyLua.hpp"
 #endif
 
-extern "C" {
+extern "C++" {
 #include "lualib.h"
 #if USE_LUAJIT
 	#include "luajit.h"
+#elif 1
+	#include "luacode.h"
 #else
 	#include "bit.h"
 #endif
@@ -71,7 +73,11 @@ ScriptApiBase::ScriptApiBase(ScriptingType type):
 	m_luastack = luaL_newstate();
 	FATAL_ERROR_IF(!m_luastack, "luaL_newstate() failed");
 
+#if 1
+	// TODO(Luau)
+#else
 	lua_atpanic(m_luastack, &luaPanic);
+#endif
 
 	if (m_type == ScriptingType::Client)
 		clientOpenLibs(m_luastack);
@@ -79,7 +85,7 @@ ScriptApiBase::ScriptApiBase(ScriptingType type):
 		luaL_openlibs(m_luastack);
 
 	// Load bit library
-	lua_pushcfunction(m_luastack, luaopen_bit);
+	lua_pushcfunction(m_luastack, luaopen_bit32, LUA_BITLIBNAME);
 	lua_pushstring(m_luastack, LUA_BITLIBNAME);
 	lua_call(m_luastack, 1, 0);
 
@@ -96,7 +102,7 @@ ScriptApiBase::ScriptApiBase(ScriptingType type):
 #endif
 	lua_rawseti(m_luastack, LUA_REGISTRYINDEX, CUSTOM_RIDX_SCRIPTAPI);
 
-	lua_pushcfunction(m_luastack, script_error_handler);
+	lua_pushcfunction(m_luastack, script_error_handler, nullptr);
 	lua_rawseti(m_luastack, LUA_REGISTRYINDEX, CUSTOM_RIDX_ERROR_HANDLER);
 
 	// Add a C++ wrapper function to catch exceptions thrown in Lua -> C++ calls
@@ -104,6 +110,8 @@ ScriptApiBase::ScriptApiBase(ScriptingType type):
 	lua_pushlightuserdata(m_luastack, (void*) script_exception_wrapper);
 	luaJIT_setmode(m_luastack, -1, LUAJIT_MODE_WRAPCFUNC | LUAJIT_MODE_ON);
 	lua_pop(m_luastack, 1);
+#elif 1
+	// TODO(Luau)
 #else
 	// (This is a custom API from the bundled Lua.)
 	lua_atccall(m_luastack, script_exception_wrapper);
@@ -117,27 +125,27 @@ ScriptApiBase::ScriptApiBase(ScriptingType type):
 	lua_pushcfunction(m_luastack, [](lua_State *L) -> int {
 		lua_rawseti(L, LUA_REGISTRYINDEX, CUSTOM_RIDX_READ_VECTOR);
 		return 0;
-	});
+	}, "set_read_vector");
 	lua_setfield(m_luastack, -2, "set_read_vector");
 	lua_pushcfunction(m_luastack, [](lua_State *L) -> int {
 		lua_rawseti(L, LUA_REGISTRYINDEX, CUSTOM_RIDX_PUSH_VECTOR);
 		return 0;
-	});
+	}, "set_push_vector");
 	lua_setfield(m_luastack, -2, "set_push_vector");
 	lua_pushcfunction(m_luastack, [](lua_State *L) -> int {
 		lua_rawseti(L, LUA_REGISTRYINDEX, CUSTOM_RIDX_READ_NODE);
 		return 0;
-	});
+	}, "set_read_node");
 	lua_setfield(m_luastack, -2, "set_read_node");
 	lua_pushcfunction(m_luastack, [](lua_State *L) -> int {
 		lua_rawseti(L, LUA_REGISTRYINDEX, CUSTOM_RIDX_PUSH_NODE);
 		return 0;
-	});
+	}, "set_push_node");
 	lua_setfield(m_luastack, -2, "set_push_node");
 	lua_pushcfunction(m_luastack, [](lua_State *L) -> int {
 		lua_rawseti(L, LUA_REGISTRYINDEX, CUSTOM_RIDX_PUSH_MOVERESULT1);
 		return 0;
-	});
+	}, "set_push_moveresult1");
 	lua_setfield(m_luastack, -2, "set_push_moveresult1");
 	// Finally, put the table into the global environment:
 	lua_setglobal(m_luastack, "core");
@@ -186,7 +194,7 @@ void ScriptApiBase::clientOpenLibs(lua_State *L)
 	};
 
 	for (const auto &lib : m_libs) {
-	    lua_pushcfunction(L, lib.second);
+	    lua_pushcfunction(L, lib.second, lib.first.c_str());
 	    lua_pushstring(L, lib.first.c_str());
 	    lua_call(L, 1, 0);
 	}
@@ -245,7 +253,13 @@ void ScriptApiBase::loadScript(const std::string &script_path)
 	if (ScriptApiSecurity::isSecure(L)) {
 		ok = ScriptApiSecurity::safeLoadFile(L, script_path.c_str());
 	} else {
-		ok = !luaL_loadfile(L, script_path.c_str());
+		std::string script;
+		ok = fs::ReadFile(script_path, script);
+		if (ok) {
+			size_t bytecodeSize;
+			char* bytecode = luau_compile(script.data(), script.size(), nullptr, &bytecodeSize);
+			ok = !luau_load(L, script_path.c_str(), bytecode, bytecodeSize, 0);
+		}
 	}
 	ok = ok && !lua_pcall(L, 0, 0, error_handler);
 	if (!ok) {

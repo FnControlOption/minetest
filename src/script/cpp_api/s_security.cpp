@@ -17,9 +17,13 @@
 #include <algorithm>
 #include <iostream>
 
+extern "C++" {
+#include <luacode.h>
+}
+
 
 #define SECURE_API(lib, name) \
-	lua_pushcfunction(L, sl_##lib##_##name); \
+	lua_pushcfunction(L, sl_##lib##_##name, #name); \
 	lua_setfield(L, -2, #name);
 
 
@@ -432,11 +436,17 @@ void ScriptApiSecurity::getGlobalsBackup(lua_State *L)
 
 bool ScriptApiSecurity::safeLoadString(lua_State *L, std::string_view code, const char *chunk_name)
 {
+#if 1
+	// TODO(Luau)
+#else
 	if (code.size() > 0 && code[0] == LUA_SIGNATURE[0]) {
 		lua_pushliteral(L, "Bytecode prohibited when mod security is enabled.");
 		return false;
 	}
-	if (luaL_loadbuffer(L, code.data(), code.size(), chunk_name))
+#endif
+	size_t bytecodeSize;
+	char* bytecode = luau_compile(code.data(), code.size(), nullptr, &bytecodeSize);
+	if (luau_load(L, chunk_name, bytecode, bytecodeSize, 0))
 		return false;
 	return true;
 }
@@ -524,10 +534,9 @@ std::string ScriptApiSecurity::getCurrentModName(lua_State *L)
 	lua_Debug info;
 
 	// Make sure there's only one item below this function on the stack...
-	if (lua_getstack(L, 2, &info))
+	if (lua_stackdepth(L) > 2)
 		return "";
-	FATAL_ERROR_IF(!lua_getstack(L, 1, &info), "lua_getstack() failed");
-	FATAL_ERROR_IF(!lua_getinfo(L, "S", &info), "lua_getinfo() failed");
+	FATAL_ERROR_IF(!lua_getinfo(L, 1, "S", &info), "lua_getinfo() failed");
 
 	// ...and that that item is the main file scope.
 	if (strcmp(info.what, "main") != 0)
@@ -832,7 +841,8 @@ int ScriptApiSecurity::sl_g_loadstring(lua_State *L)
 int ScriptApiSecurity::sl_g_require(lua_State *L)
 {
 	lua_pushliteral(L, "require() is disabled when mod security is on.");
-	return lua_error(L);
+	lua_error(L);
+	return 0;  /* unreachable */
 }
 
 

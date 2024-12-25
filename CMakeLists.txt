@@ -282,8 +282,18 @@ endif()
 # Library pack
 find_package(GMP REQUIRED)
 find_package(Json 1.0.0 REQUIRED)
-find_package(Lua REQUIRED)
-if(NOT USE_LUAJIT)
+# find_package(Lua REQUIRED)
+set(LUA_INCLUDE_DIR D:/vcpkg/packages/luau_x64-windows/include/luau)
+set(LUA_LIBRARY D:/vcpkg/packages/luau_x64-windows/lib/Luau.Analysis.lib
+                D:/vcpkg/packages/luau_x64-windows/lib/Luau.Ast.lib
+                D:/vcpkg/packages/luau_x64-windows/lib/Luau.CLI.lib.lib
+                D:/vcpkg/packages/luau_x64-windows/lib/Luau.Compiler.lib
+                D:/vcpkg/packages/luau_x64-windows/lib/Luau.Config.lib
+                D:/vcpkg/packages/luau_x64-windows/lib/Luau.EqSat.lib
+                D:/vcpkg/packages/luau_x64-windows/lib/Luau.VM.lib)
+if(TRUE)
+	# TODO(Luau)
+elseif(NOT USE_LUAJIT)
 	add_subdirectory(lib/bitop)
 endif()
 add_subdirectory(lib/sha256)

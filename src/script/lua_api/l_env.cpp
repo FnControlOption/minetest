@@ -1193,11 +1193,9 @@ int ModApiEnv::l_emerge_area(lua_State *L)
 	if (lua_isfunction(L, 3)) {
 		callback = LuaEmergeAreaCallback;
 
-		lua_pushvalue(L, 3);
-		int callback_ref = luaL_ref(L, LUA_REGISTRYINDEX);
+		int callback_ref = lua_ref(L, 3);
 
-		lua_pushvalue(L, 4);
-		int args_ref = luaL_ref(L, LUA_REGISTRYINDEX);
+		int args_ref = lua_ref(L, 4);
 
 		state = new ScriptCallbackState;
 		state->script       = getServer(L)->getScriptIface();

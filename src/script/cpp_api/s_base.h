@@ -12,7 +12,7 @@
 #include "common/helper.h"
 #include "util/basic_macros.h"
 
-extern "C" {
+extern "C++" {
 #include <lua.h>
 #include <lualib.h>
 }

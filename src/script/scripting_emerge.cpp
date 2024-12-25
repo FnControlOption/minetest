@@ -22,7 +22,7 @@
 #include "lua_api/l_settings.h"
 #include "lua_api/l_ipc.h"
 
-extern "C" {
+extern "C++" {
 #include <lualib.h>
 }
 

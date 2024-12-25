@@ -40,7 +40,7 @@ MainMenuSoundHandle *MainMenuSoundHandle::checkobject(lua_State *L, int narg)
 	luaL_checktype(L, narg, LUA_TUSERDATA);
 	void *ud = luaL_checkudata(L, narg, className);
 	if (!ud)
-		luaL_typerror(L, narg, className);
+		luaL_typeerrorL(L, narg, className);
 	return *(MainMenuSoundHandle**)ud; // unbox pointer
 }
 
@@ -85,7 +85,7 @@ void MainMenuSoundHandle::Register(lua_State *L)
 	lua_settable(L, metatable);
 
 	lua_pushliteral(L, "__gc");
-	lua_pushcfunction(L, gc_object);
+	lua_pushcfunction(L, gc_object, "__gc");
 	lua_settable(L, metatable);
 
 	lua_pop(L, 1);  // drop metatable

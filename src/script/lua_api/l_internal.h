@@ -13,6 +13,9 @@
 
 #include "common/c_internal.h"
 
+#define luaL_checkint(L,n)	((int)luaL_checkinteger(L, (n)))
+#define lua_register(L,n,f) (lua_pushcfunction(L, (f), (n)), lua_setglobal(L, (n)))
+
 #define luamethod(class, name) {#name, class::l_##name}
 
 #define luamethod_dep(class, good, bad)                                     \

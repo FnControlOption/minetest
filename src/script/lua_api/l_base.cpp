@@ -84,7 +84,7 @@ bool ModApiBase::registerFunction(lua_State *L, const char *name,
 {
 	// TODO: Check presence first!
 
-	lua_pushcfunction(L, func);
+	lua_pushcfunction(L, func, name);
 	lua_setfield(L, top, name);
 
 	return true;
@@ -125,8 +125,7 @@ int ModApiBase::l_deprecated_function(lua_State *L, const char *good, const char
 	lua_Debug ar;
 
 	// Get caller name with line and script backtrace
-	FATAL_ERROR_IF(!lua_getstack(L, 1, &ar), "lua_getstack() failed");
-	FATAL_ERROR_IF(!lua_getinfo(L, "Sl", &ar), "lua_getinfo() failed");
+	FATAL_ERROR_IF(!lua_getinfo(L, 1, "Sl", &ar), "lua_getinfo() failed");
 
 	// Get backtrace and hash it to reduce the warning flood
 	std::string backtrace = ar.short_src;

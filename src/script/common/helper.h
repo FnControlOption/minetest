@@ -6,7 +6,7 @@
 
 #include <string_view>
 
-extern "C" {
+extern "C++" {
 #include <lua.h>
 }
 

@@ -8,13 +8,13 @@
 
 #include <stdexcept>
 
-extern "C" {
+extern "C++" {
 #if USE_LUAJIT
 	#include <luajit.h>
 #else
 	#include <lua.h>
 #endif
-#include <lauxlib.h>
+#include <lualib.h>
 }
 
 /*
@@ -75,11 +75,13 @@ void TestLua::testLuaDestructors()
 	bool did_destruct = false;
 
 	lua_State *L = luaL_newstate();
-	lua_cpcall(L, [](lua_State *L) -> int {
+	lua_pushcfunction(L, [](lua_State *L) -> int {
 		DestructorDetector d(reinterpret_cast<bool*>(lua_touserdata(L, 1)));
 		luaL_error(L, "error");
 		return 0;
-	}, &did_destruct);
+	}, nullptr);
+	lua_pushlightuserdata(L, &did_destruct);
+	lua_pcall(L, 1, 0, 0);
 	lua_close(L);
 
 	UASSERT(did_destruct);
@@ -93,7 +95,8 @@ namespace {
 			return inner(L);
 		} catch (std::exception &e) {
 			lua_pushstring(L, e.what());
-			return lua_error(L);
+			lua_error(L);
+			return 0;  /* unreachable */
 		}
 	}
 
@@ -113,13 +116,15 @@ void TestLua::testCxxExceptions()
 	lua_pushlightuserdata(L, reinterpret_cast<void*>(wrapper));
 	luaJIT_setmode(L, -1, LUAJIT_MODE_WRAPCFUNC | LUAJIT_MODE_ON);
 	lua_pop(L, 1);
+#elif 1
+	// TODO(Luau)
 #else
 	lua_atccall(L, wrapper);
 #endif
 
 	lua_pushcfunction(L, [](lua_State *L) -> int {
 		throw std::runtime_error("example");
-	});
+	}, nullptr);
 
 	int caught = 0;
 	std::string errmsg;

@@ -38,7 +38,7 @@
 #endif
 
 // for version information only
-extern "C" {
+extern "C++" {
 #if USE_LUAJIT
 	#include <luajit.h>
 #else
@@ -436,6 +436,8 @@ static void print_version(std::ostream &os)
 	<< " (OpenResty)"
 #endif
 	<< std::endl;
+#elif 1
+	// TODO(Luau)
 #else
 	os << "Using " << LUA_RELEASE << std::endl;
 #endif

@@ -9,7 +9,7 @@
 #include "irrlichttypes.h"
 #include "util/basic_macros.h"
 
-extern "C" {
+extern "C++" {
 #include <lua.h>
 }
 

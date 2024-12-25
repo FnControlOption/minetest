@@ -39,7 +39,7 @@ int ItemStackMetaRef::l_set_tool_capabilities(lua_State *L)
 		ToolCapabilities caps = read_tool_capabilities(L, 2);
 		metaref->setToolCapabilities(caps);
 	} else {
-		luaL_typerror(L, 2, "table or nil");
+		luaL_typeerrorL(L, 2, "table or nil");
 	}
 
 	return 0;
@@ -53,7 +53,7 @@ int ItemStackMetaRef::l_set_wear_bar_params(lua_State *L)
 	} else if (lua_istable(L, 2) || lua_isstring(L, 2)) {
 		metaref->setWearBarParams(read_wear_bar_params(L, 2));
 	} else {
-		luaL_typerror(L, 2, "table, ColorString, or nil");
+		luaL_typeerrorL(L, 2, "table, ColorString, or nil");
 	}
 
 	return 0;

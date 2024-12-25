@@ -698,7 +698,9 @@ if(BUILD_CLIENT)
 		"$<$<PLATFORM_ID:Android>:${SDL2_LIBRARIES}>"
 	)
 	target_compile_definitions(${PROJECT_NAME} PRIVATE "MT_BUILDTARGET=1")
-	if(NOT USE_LUAJIT)
+	if(TRUE)
+		# TODO(Luau)
+	elseif(NOT USE_LUAJIT)
 		set_target_properties(${PROJECT_NAME} PROPERTIES
 			# This is necessary for dynamic Lua modules
 			# to work when Lua is statically linked (issue #10806)
@@ -785,7 +787,9 @@ if(BUILD_SERVER)
 		${PLATFORM_LIBS}
 	)
 	target_compile_definitions(${PROJECT_NAME}server PRIVATE "MT_BUILDTARGET=2")
-	if(NOT USE_LUAJIT)
+	if(TRUE)
+		# TODO(Luau)
+	elseif(NOT USE_LUAJIT)
 		set_target_properties(${PROJECT_NAME}server PROPERTIES
 			# This is necessary for dynamic Lua modules
 			# to work when Lua is statically linked (issue #10806)

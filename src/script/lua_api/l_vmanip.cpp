@@ -375,7 +375,7 @@ int LuaVoxelManip::create_object(lua_State *L)
 	// Call read_from_map so we don't have to duplicate it here
 	const int top = lua_gettop(L);
 	if (lua_istable(L, 1) && lua_istable(L, 2)) {
-		lua_pushcfunction(L, l_read_from_map);
+		lua_pushcfunction(L, l_read_from_map, "read_from_map");
 		lua_pushvalue(L, top);
 		lua_pushvalue(L, 1);
 		lua_pushvalue(L, 2);

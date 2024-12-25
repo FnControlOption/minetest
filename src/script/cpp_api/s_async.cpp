@@ -5,10 +5,10 @@
 #include <cstdio>
 #include <cstdlib>
 
-extern "C" {
+extern "C++" {
 #include <lua.h>
-#include <lauxlib.h>
 #include <lualib.h>
+#include <luacode.h>
 }
 
 #include "server.h"
@@ -348,7 +348,9 @@ void* AsyncWorkerThread::run()
 			FATAL_ERROR("Unable to get async job processor!");
 		luaL_checktype(L, -1, LUA_TFUNCTION);
 
-		if (luaL_loadbuffer(L, j.function.data(), j.function.size(), "=(async)")) {
+		size_t bytecodeSize;
+		char* bytecode = luau_compile(j.function.data(), j.function.size(), nullptr, &bytecodeSize);
+		if (luau_load(L, "=(async)", bytecode, bytecodeSize, 0)) {
 			errorstream << "ASYNC WORKER: Unable to deserialize function" << std::endl;
 			lua_pushnil(L);
 		}

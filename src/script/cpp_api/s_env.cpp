@@ -338,8 +338,8 @@ void ScriptApiEnv::on_emerge_area_completion(
 	lua_pop(L, 1); // Pop error handler
 
 	if (state->refcount == 0) {
-		luaL_unref(L, LUA_REGISTRYINDEX, state->callback_ref);
-		luaL_unref(L, LUA_REGISTRYINDEX, state->args_ref);
+		lua_unref(L, state->callback_ref);
+		lua_unref(L, state->args_ref);
 	}
 }
 

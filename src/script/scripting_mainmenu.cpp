@@ -15,7 +15,7 @@
 #include "filesys.h"
 #include "porting.h"
 
-extern "C" {
+extern "C++" {
 #include "lualib.h"
 }
 

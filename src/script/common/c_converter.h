@@ -17,7 +17,7 @@
 #include "irrlichttypes_bloated.h"
 #include "common/c_types.h"
 
-extern "C" {
+extern "C++" {
 #include <lua.h>
 }
 

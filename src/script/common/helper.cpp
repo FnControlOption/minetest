@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 // Copyright (C) 2018 nerzhul, Loic Blot <loic.blot@unix-experience.fr>
 
-extern "C" {
-#include <lauxlib.h>
+extern "C++" {
+#include <lualib.h>
 }
 
 #include "helper.h"

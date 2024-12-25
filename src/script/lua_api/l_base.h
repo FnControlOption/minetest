@@ -10,9 +10,9 @@
 #include "gamedef.h"
 #include <unordered_map>
 
-extern "C" {
+extern "C++" {
 #include <lua.h>
-#include <lauxlib.h>
+#include <lualib.h>
 }
 
 #if CHECK_CLIENT_BUILD()

@@ -17,6 +17,10 @@
 #include "filesys.h"
 #include <algorithm>
 
+extern "C++" {
+#include <luacode.h>
+}
+
 // request_shutdown()
 int ModApiServer::l_request_shutdown(lua_State *L)
 {
@@ -572,7 +576,9 @@ int ModApiServer::l_dynamic_add_media(lua_State *L)
 		if (!lua_isnoneornil(L, 2))
 			throw LuaError("must be called without callback at load-time");
 		// In order to keep edge cases to a minimum actually use an empty function.
-		int err = luaL_loadstring(L, "");
+		size_t bytecodeSize;
+		char* bytecode = luau_compile("", 0, nullptr, &bytecodeSize);
+		int err = luau_load(L, "", bytecode, bytecodeSize, 0);
 		SANITY_CHECK(err == 0);
 		lua_replace(L, 2);
 	} else {

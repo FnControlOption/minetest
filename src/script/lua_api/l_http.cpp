@@ -16,7 +16,7 @@
 
 #define HTTP_API(name) \
 	lua_pushstring(L, #name); \
-	lua_pushcfunction(L, l_http_##name); \
+	lua_pushcfunction(L, l_http_##name, #name); \
 	lua_settable(L, -3);
 
 #if USE_CURL
