@@ -284,13 +284,18 @@ find_package(GMP REQUIRED)
 find_package(Json 1.0.0 REQUIRED)
 # find_package(Lua REQUIRED)
 set(LUA_INCLUDE_DIR D:/vcpkg/packages/luau_x64-windows/include/luau)
-set(LUA_LIBRARY D:/vcpkg/packages/luau_x64-windows/lib/Luau.Analysis.lib
-                D:/vcpkg/packages/luau_x64-windows/lib/Luau.Ast.lib
-                D:/vcpkg/packages/luau_x64-windows/lib/Luau.CLI.lib.lib
-                D:/vcpkg/packages/luau_x64-windows/lib/Luau.Compiler.lib
-                D:/vcpkg/packages/luau_x64-windows/lib/Luau.Config.lib
-                D:/vcpkg/packages/luau_x64-windows/lib/Luau.EqSat.lib
-                D:/vcpkg/packages/luau_x64-windows/lib/Luau.VM.lib)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	set(LUA_LIB_DIR D:/vcpkg/packages/luau_x64-windows/debug/lib)
+else()
+	set(LUA_LIB_DIR D:/vcpkg/packages/luau_x64-windows/lib)
+endif()
+set(LUA_LIBRARY ${LUA_LIB_DIR}/Luau.Analysis.lib
+                ${LUA_LIB_DIR}/Luau.Ast.lib
+                ${LUA_LIB_DIR}/Luau.CLI.lib.lib
+                ${LUA_LIB_DIR}/Luau.Compiler.lib
+                ${LUA_LIB_DIR}/Luau.Config.lib
+                ${LUA_LIB_DIR}/Luau.EqSat.lib
+                ${LUA_LIB_DIR}/Luau.VM.lib)
 if(TRUE)
 	# TODO(Luau)
 elseif(NOT USE_LUAJIT)
