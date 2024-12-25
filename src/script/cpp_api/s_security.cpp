@@ -99,7 +99,7 @@ void ScriptApiSecurity::initializeSecurity()
 		"string",
 		"table",
 		"math",
-		"bit",
+		LUA_BITLIBNAME,
 		// Not sure if completely safe. But if someone enables tracy, they'll
 		// know what they do.
 #if BUILD_WITH_TRACY
@@ -299,7 +299,7 @@ void ScriptApiSecurity::initializeSecurityClient()
 		"string",
 		"table",
 		"math",
-		"bit",
+		LUA_BITLIBNAME,
 		// Not sure if completely safe. But if someone enables tracy, they'll
 		// know what they do.
 #if BUILD_WITH_TRACY
