@@ -1,7 +1,7 @@
 core.callback_origins = {}
 
-local getinfo = debug.getinfo
-debug.getinfo = nil
+local info = debug.info
+debug.info = nil
 
 --- Runs given callbacks.
 --
@@ -56,7 +56,7 @@ local function make_registration()
 		t[#t + 1] = func
 		core.callback_origins[func] = {
 			mod = core.get_current_modname() or "??",
-			name = getinfo(1, "n").name or "??"
+			name = info(1, "n") or "??"
 		}
 		--local origin = core.callback_origins[func]
 		--print(origin.name .. ": " .. origin.mod .. " registering cbk " .. tostring(func))

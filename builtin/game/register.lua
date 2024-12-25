@@ -497,9 +497,9 @@ function core.registered_on_player_hpchange(player, hp_change, reason)
 		local func = core.registered_on_player_hpchanges.modifiers[i]
 		hp_change, last = func(player, hp_change, reason)
 		if type(hp_change) ~= "number" then
-			local debuginfo = debug.getinfo(func)
+			local debuginfo = {debug.info(func, "sl")}
 			error("The register_on_hp_changes function has to return a number at " ..
-				debuginfo.short_src .. " line " .. debuginfo.linedefined)
+				debuginfo[1] .. " line " .. debuginfo[2])
 		end
 		if last then
 			break
@@ -519,7 +519,7 @@ function core.register_on_player_hpchange(func, modifier)
 	end
 	core.callback_origins[func] = {
 		mod = core.get_current_modname() or "??",
-		name = debug.getinfo(1, "n").name or "??"
+		name = debug.info(1, "n") or "??"
 	}
 end
 
