@@ -437,7 +437,7 @@ static void print_version(std::ostream &os)
 #endif
 	<< std::endl;
 #elif 1
-	// TODO(Luau)
+	os << "Using Luau" << std::endl;
 #else
 	os << "Using " << LUA_RELEASE << std::endl;
 #endif
